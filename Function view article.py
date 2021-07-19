@@ -9,7 +9,7 @@ def view_notes(login):
     '''
     print('\n' + 'Веберите номер для чтения!' + '\n' + '\n' + 'Ваши заметки:')
     with open(login + '.txt', 'r') as file:
-        notes = file.read().split(';')[::-1]
+        notes = file.read().split(';')[:-1][::-1]
         for note in range(len(notes)):
             print(str(note + 1) + ' ' + ' '.join(notes[note].split()[:5]))
         number_selection = input()
@@ -30,11 +30,11 @@ def view_notes(login):
             if choice_of_action == 'Редактировать':
                 print('ред')
                 break
-                #edit_note(login, number_selection[::-1])
+                #edit_note(login, int(number_selection[::-1]))
             elif choice_of_action == 'Удалить':
                 print('уд')
                 break
-                #delete_note(login, number_selection[::-1])
+                #delete_note(login, int(number_selection[::-1]))
             elif choice_of_action == 'Закрыть':
                 view_notes(login)
             elif choice_of_action == 'Выйти':
