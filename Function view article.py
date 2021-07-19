@@ -24,27 +24,34 @@ def view_notes(login):
             print('\n' + 'Вы ввели не номер заметки, повторите ещё раз внимательно!')
             view_notes(login)
         choice_of_action = input()
-        if choice_of_action.isalpha():
+        while choice_of_action == str(choice_of_action):
             if choice_of_action == 'Редактировать':
                 print('ред')
+                break
                 #edit_note(login, number_selection)
             elif choice_of_action == 'Удалить':
                 print('уд')
+                break
                 #delete_note(login, number_selection)
             elif choice_of_action == 'Закрыть':
                 view_notes(login)
             elif choice_of_action == 'Выйти':
                 print('вых')
+                break
                 #main_menu(login)
             else:
-                print('\n' + 'Такого варианта нет, будьте внимательны!')
-                view_notes(login)
-        else:
-            print('\n' + '\n' + 'Такого варианта нет, будьте внимательны!')
-            view_notes(login)
+                print('\n' + 'Такого варианта нет, будьте внимательны!!!!')
+                print('\n' + 'Ваши варианты (веберите один):' + '\n' + 'Редактировать ' + '\n' + 'Удалить' + '\n' +
+                        'Закрыть (вернуться к выбору заметки)' + '\n' + 'Выйти (в главное меню)')
+                choice_of_action = input()
 
 
 view_notes('qwerty')
 
 
-
+'''
+help(view_notes)
+или
+print(view_notes.__doc__)
+Вызов описания функции
+'''
