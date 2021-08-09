@@ -1,0 +1,198 @@
+import random as rd
+
+structure = {}
+# создание уникальных номеров
+ids = ['']
+s = ''
+for i in range(1000):
+    while str(s) in ids:
+        s = rd.randint(10000, 99999)
+    ids.append(str(s))
+ids = ids[1:]
+for i in ids:
+    structure[i] = {}
+for i in ids:
+    structure[i]['age'] = rd.randint(15, 77)
+    structure[i]['sex'] = rd.choice(['m', 'f'])
+    structure[i]['country'] = rd.choice(['rf', 'rb', 'uk', 'kz', 'uz'])
+    structure[i]['month'] = rd.choice(['mart', 'april', 'may', 'june'])
+    structure[i]['zp'] = rd.randint(11300, 120000)
+    structure[i]['point'] = rd.randint(1, 10)
+
+
+class Vakzinazia:
+
+    ''' Метод middle_age --> общий средний возраст
+        Метод gender_statistics --> общее количество людей (разделение по гендерному различию)
+        Метод middle_age_per_month --> средний возраст в месяц
+        Метод middle_age_of_sex -->  средний возраст (разделение по гендерному различию)
+        Метод all_age_loyalty --> статистика по каждому году по лояльности
+        Метод periodic_age_loyalty --> статистика за определенные периоды по лояльности
+        Метод vaccinated_month --> статистика привитых людей в месяц
+        Метод vaccinated_country --> статистика привитых людей в месяц (разделение на страны)
+        Метод zp_loyalty --> статистика зависимости отценки лояльности от заработной платы
+    '''
+
+    def __init__(self):
+        print('Hello')
+        print('==============================================================================================')
+
+    def middle_age(self, dct):
+        sm = []
+        for i in list(dct.keys()):
+            sm.append(dct[i]['age'])
+        sm = set(sm)
+        print('Средний возраст прошедших вакцинацию', sum(sm) / len(sm), 'лет')
+        print('==============================================================================================')
+
+    def gender_statistics(self, dct, *sex):
+        count_f = 0
+        count_m = 0
+        if len(sex) == 1 and sex[0] == 'f':
+            for info in list(dct.keys()):
+                if structure[info]['sex'] == 'f':
+                    count_f += 1
+            print('Женщин пришло вакцинироваться:', count_f, 'человек(а)', '-->',
+                  (count_f / (len(structure) / 100)), '%')
+        elif len(sex) == 1 and sex[0] == 'm':
+            for info in list(dct.keys()):
+                if structure[info]['sex'] == 'm':
+                    count_m += 1
+            print('Мужчин пришло вакцинироваться:', count_m, 'человек(а)', '-->',
+                  (count_m / (len(structure) / 100)), '%')
+        elif len(sex) == 2 and sex[0] == 'm' and sex[1] == 'f' or sex[0] == 'f' and sex[1] == 'm':
+            for info in list(dct.keys()):
+                if structure[info]['sex'] == 'f':
+                    count_f += 1
+            print('Женщин пришло вакцинироваться:', count_f, 'человек(а)', '-->',
+                  (count_f / (len(structure) / 100)), '%', '\n'
+                                                           'Мужчин пришло вакцинироваться:', len(structure) - count_f,
+                  'человек(а)', '-->',
+                  100 - (count_f / (len(structure) / 100)), '%')
+        else:
+            print('Введите аргументы правильно!')
+        print('==============================================================================================')
+
+    def middle_age_per_month(self, dct):
+        mid_mon = {}
+        for i in list(dct.keys()):
+            # задать ключи словарю по которым будут вибираться дальше нужные значения
+            mid_mon[dct[i]['month']] = []
+        for i in list(dct.keys()):
+            # по ключу добавляються нужные значения
+            mid_mon[dct[i]['month']].append(dct[i]['age'])
+        for i in list(mid_mon.keys()):
+            print('Средний возраст в', i, round(sum(mid_mon[i]) / len(mid_mon[i]), 1), 'лет')
+        print('==============================================================================================')
+
+    def middle_age_of_sex(self, dct):
+        mid_sex = {}
+        for i in list(dct.keys()):
+            mid_sex[dct[i]['sex']] = []
+        for i in list(dct.keys()):
+            mid_sex[dct[i]['sex']].append(dct[i]['age'])
+        for i in list(mid_sex.keys()):
+            print('Средний возраст у', i, round(sum(mid_sex[i]) / len(mid_sex[i]), 1), 'лет')
+        print('==============================================================================================')
+
+    def all_age_loyalty(self, dct):
+        loyalty = {}
+        count = 0
+        for i in list(dct.keys()):
+            loyalty[dct[i]['age']] = []
+        for i in list(dct.keys()):
+            loyalty[dct[i]['age']].append(dct[i]['point'])
+        for i in list(loyalty.keys()):
+            for point in loyalty[i]:
+                if point >= 5:
+                    count += 1
+            print('Лояльность к вакцинации в возрасте:', i, 'лет(года)', 'колличество человек', count)
+            count = 0
+            for point in loyalty[i]:
+                if point <= 5:
+                    count += 1
+            print('Отрицательное мнение к вакцинации в возрасте:', i, 'лет(года)', 'колличество человек', count)
+        print('==============================================================================================')
+
+    def periodic_age_loyalty(self, dct):
+        ages = {
+            'до 18': {'points': 0, 'count': 0},
+            'от 19 до 30': {'points': 0, 'count': 0},
+            'от 31 до 50': {'points': 0, 'count': 0},
+            '50+': {'points': 0, 'count': 0}
+        }
+        for key in list(dct.keys()):
+            for person in [dct[key]['age']]:
+                if person <= 18:
+                    ages['до 18']['points'] += person
+                    ages['до 18']['count'] += 1
+                elif 19 <= person <= 30:
+                    ages['от 19 до 30']['points'] += person
+                    ages['от 19 до 30']['count'] += 1
+                elif 31 <= person <= 50:
+                    ages['от 31 до 50']['points'] += person
+                    ages['от 31 до 50']['count'] += 1
+                elif person >= 51:
+                    ages['50+']['points'] += person
+                    ages['50+']['count'] += 1
+        for key_2 in ages:
+            print('Лояльность к вакцинации в возрасте:', key_2, 'лет', 'колличество человек', ages[key_2]["count"],
+                  'уровень лояльности', ages[key_2]["points"], 'очков')
+        print('==============================================================================================')
+
+    def vaccinated_month(self, dct):
+        months = {}
+        for key in list(dct.keys()):
+            months[dct[key]['month']] = []
+        for key in list(dct.keys()):
+            months[dct[key]['month']].append(dct[key]['age'])
+        for key in list(months.keys()):
+            print('Привиты в:', key, len(months[key]), 'человек')
+        print('==============================================================================================')
+
+    def vaccinated_country(self, dct):
+        countries = {}
+        for key in list(dct.keys()):
+            countries[dct[key]['month']] = []
+        for key in list(dct.keys()):
+            countries[dct[key]['month']].append(dct[key]['country'])
+        for key in list(countries.keys()):
+            count = 0
+            for i in countries[key]:
+                if i == 'rf':
+                    count += 1
+            percent = (count / len(countries[key])) * 100
+            print('В месяце:', key, 'привилось граждан РФ', count, '-->', round(percent, 2), '%')
+        print('==============================================================================================')
+        for key in list(countries.keys()):
+            count = 0
+            for i in countries[key]:
+                if i != 'rf':
+                    count += 1
+            percent = (count / len(countries[key])) * 100
+            print('В месяце:', key, 'привилось иностранных граждан ', count, '-->', round(percent, 2), '%')
+        print('==============================================================================================')
+
+    def zp_loyalty(self, dct):
+        zps = {}
+        for i in list(dct.keys()):
+            zps[dct[i]['point']] = []
+        for i in list(dct.keys()):
+            zps[dct[i]['point']].append(dct[i]['zp'])
+        list_zp = [i for i in list(zps.keys())]
+        list_zp.sort()
+        for i in list_zp:
+            print('Оценка лояльности:', i, 'средняя заработная плата ', int(sum(zps[i]) / len(zps[i])), 'у.е.')
+        print('==============================================================================================')
+
+
+str = Vakzinazia()
+str.middle_age(structure)
+str.gender_statistics(structure, 'm', 'f')
+str.middle_age_per_month(structure)
+str.middle_age_of_sex(structure)
+str.all_age_loyalty(structure)
+str.periodic_age_loyalty(structure)
+str.vaccinated_month(structure)
+str.vaccinated_country(structure)
+str.zp_loyalty(structure)
